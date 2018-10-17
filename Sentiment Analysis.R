@@ -1,5 +1,4 @@
-# installing and loading all the reqired pacakges
-
+# installing and loading all the required packages
 install.packages("twitteR")
 install.packages("ROAuth")
 library("NLP", lib.loc="~/R/win-library/3.5")
@@ -13,16 +12,17 @@ library("syuzhet", lib.loc="~/R/win-library/3.5")
 library("twitteR")
 library("ROAuth")
 library('tm')
-#Connecting Twitter account with R to extract required tweets.
 
+
+#Connecting Twitter account with R to extract required tweets.
 consumer_key <- 'Iop6G36tt07jNPTeDi3wN3ogZ'
 consumer_secret <- 'n3aHia8TNNWrGRhNZlaEea1QpzOeOx6JPlYsvCBQJG8XaJfnXn'
 access_token <- '1045909182438952961-OzfVBAUbj9MCpoWnInJvh5qMcyRVRH'
 access_secret <- 'AM6NG1blvvckCDYx21a0AKQImL1JFMTg4KOKbaBx1QCdb'
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 
-# Extracting tweets using particular hashtags
 
+# Extracting tweets using particular hashtags
 tweets_g <- searchTwitter("#google", n=1000,lang = "en")
 tweets_a <- searchTwitter("#amazon", n=1000,lang = "en")
 tweets_f <- searchTwitter("#facebook", n=1000,lang = "en")
@@ -31,8 +31,8 @@ tweets_t <- searchTwitter("#twitter", n=1000,lang = "en")
 tweets_ap <- searchTwitter("#apple", n=1000,lang = "en")
 tweets_tl <- searchTwitter("#tesla", n=1000,lang = "en")
 
-# Converting extracted tweets to a dataframe to make it more readable and easier to work with
 
+# Converting extracted tweets to a dataframe to make it more readable and easier to work with
 amazon_tweets <- twListToDF(tweets_a)
 google_tweets <- twListToDF(tweets_g)
 facebook_tweets <- twListToDF(tweets_f)
@@ -41,8 +41,8 @@ apple_tweets <- twListToDF(tweets_ap)
 twitter_tweets <- twListToDF(tweets_t)
 tesla_tweets <- twListToDF(tweets_tl)
 
-# Extracting only text from tweets
 
+# Extracting only text from tweets
 google_text<- google_tweets$text
 amazon_text <- amazon_tweets$text
 facebook_text <- facebook_tweets$text
@@ -50,6 +50,7 @@ twitter_text <- twitter_tweets$text
 apple_text <- apple_tweets$text
 tech_text <- tech_tweets$text
 tesla_text <- tesla_tweets$text
+
 
 #convert all text to lower case
 google_text<- tolower(google_text)
@@ -60,6 +61,7 @@ apple_text <- tolower(apple_text)
 twitter_text <- tolower(twitter_text)
 tesla_text <- tolower(tesla_text)
 
+
 # Replace blank space ("rt")
 google_text <- gsub("rt", "", google_text)
 amazon_text <- gsub("rt", "", amazon_text)
@@ -68,6 +70,7 @@ tech_text <- gsub("rt", "", tech_text)
 apple_text <- gsub("rt", "", apple_text)
 twitter_text <- gsub("rt", "", twitter_text)
 tesla_text <- gsub("rt", "", tesla_text)
+
 
 # Replace @UserName
 google_text <- gsub("@\\w+", "", google_text)
@@ -78,6 +81,7 @@ apple_text <- gsub("@\\w+", "", apple_text)
 twitter_text <- gsub("@\\w+", "", twitter_text)
 tesla_text <- gsub("@\\w+", "", tesla_text)
 
+
 # Remove punctuation
 google_text <- gsub("[[:punct:]]", "", google_text)
 amazon_text <- gsub("[[:punct:]]", "", amazon_text)
@@ -86,6 +90,7 @@ tech_text <- gsub("[[:punct:]]", "", tech_text)
 apple_text <- gsub("[[:punct:]]", "", apple_text)
 twitter_text <- gsub("[[:punct:]]", "", twitter_text)
 tesla_text <- gsub("[[:punct:]]", "", tesla_text)
+
 
 # Remove links
 google_text <- gsub("http\\w+", "", google_text)
@@ -96,6 +101,7 @@ apple_text <- gsub("http\\w+", "", apple_text)
 twitter_text <- gsub("http\\w+", "", twitter_text)
 tesla_text <- gsub("http\\w+", "", tesla_text)
 
+
 #Remove tabs
 google_text <- gsub("[ |\t]{2,}", "", google_text)
 amazon_text <- gsub("[ |\t]{2,}", "", amazon_text)
@@ -104,6 +110,7 @@ tech_text <- gsub("[ |\t]{2,}", "", tech_text)
 apple_text <- gsub("[ |\t]{2,}", "", apple_text)
 twitter_text <- gsub("[ |\t]{2,}", "", twitter_text)
 tesla_text <- gsub("[ |\t]{2,}", "", tesla_text)
+
 
 # Remove blank spaces at the beginning
 google_text <- gsub("^ ", "", google_text)
@@ -114,6 +121,7 @@ apple_text <- gsub("^ ", "", apple_text)
 twitter_text <- gsub("^ ", "", twitter_text)
 tesla_text <- gsub("^ ", "", tesla_text)
 
+
 # Remove blank spaces at the end
 google_text <- gsub(" $", "", google_text)
 amazon_text <- gsub(" $", "", amazon_text)
@@ -123,10 +131,10 @@ apple_text <- gsub(" $", "", apple_text)
 twitter_text <- gsub(" $", "", twitter_text)
 tesla_text <- gsub(" $", "", tesla_text)
 
+
 #creating Corpus
 # Corpus is a collection of text documents.
-#VectorSource is usedl only for characters, same as in this case.
-
+#VectorSource is used only for characters, same as in this case.
 library('tm')
 google_tweets.text.corpus <- Corpus(VectorSource(google_text))
 amazon_tweets.text.corpus <- Corpus(VectorSource(amazon_text))
@@ -135,6 +143,7 @@ tech_tweets.text.corpus <- Corpus(VectorSource(tech_text))
 apple_tweets.text.corpus <- Corpus(VectorSource(apple_text))
 twitter_tweets.text.corpus <- Corpus(VectorSource(twitter_text))
 tesla_tweets.text.corpus <- Corpus(VectorSource(tesla_text))
+
 
 #clean up by removing stop words
 #tm : package used for text mining.
@@ -147,16 +156,19 @@ tech_tweets.text.corpus <- tm_map(tech_tweets.text.corpus, function(x)removeWord
 apple_tweets.text.corpus <- tm_map(apple_tweets.text.corpus, function(x)removeWords(x,stopwords()))
 twitter_tweets.text.corpus <- tm_map(twitter_tweets.text.corpus, function(x)removeWords(x,stopwords()))
 tesla_tweets.text.corpus <- tm_map(tesla_tweets.text.corpus, function(x)removeWords(x,stopwords()))
+                                                                   
 
-# Displaying Wordcloud for each 
+# Displaying Wordcloud for each, installing packages
 install.packages('wordcloud')
 install.packages('RColorBrewer')
 library('wordcloud')
 
+
+
 #Generating wordcloud
 # the more a specific word appears in a source of textual data (such as a speech, blog post, or database), the bigger and bolder it appears in the word cloud.
 # Next biggest word after each of the tech giants(amazon , google etc) in the wordcloud is of most significance and viral accross users.
-#min.freq : a number with less than minimum frequency will not be plotted on the cloud.
+#min.freq : a word that is tweeted less than this minimum frequency will not be plotted on the cloud.
 wordcloud(google_tweets.text.corpus,min.freq = 10,colors=brewer.pal(9, "Dark2"),random.color = TRUE,max.words = 500)
 wordcloud(amazon_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),random.color = TRUE,max.words = 500)
 wordcloud(facebook_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),random.color = TRUE,max.words = 500)
@@ -164,6 +176,8 @@ wordcloud(tech_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),ra
 wordcloud(apple_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),random.color = TRUE,max.words = 500)
 wordcloud(twitter_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),random.color = TRUE,max.words = 500)
 wordcloud(tesla_tweets.text.corpus,min.freq = 10,colors=brewer.pal(8, "Dark2"),random.color = TRUE,max.words = 500)
+                                   
+                                   
 
 #getting emotions using in-built function
 #get_nrc_sentiment is used to get analysis of emotions using the text that is being tested and divide the emotions in 8 categories.
@@ -176,6 +190,7 @@ mysentiment_apple<-get_nrc_sentiment((apple_text))
 mysentiment_twitter<-get_nrc_sentiment((twitter_text))
 mysentiment_tesla<-get_nrc_sentiment((tesla_text))
 
+                                   
 #calculationg total score for each sentiment
 Sentimentscores_google<-data.frame(colSums(mysentiment_google[,]))
 Sentimentscores_amazon<-data.frame(colSums(mysentiment_amazon[,]))
@@ -185,6 +200,8 @@ Sentimentscores_apple<-data.frame(colSums(mysentiment_apple[,]))
 Sentimentscores_twitter<-data.frame(colSums(mysentiment_twitter[,]))
 Sentimentscores_tesla<-data.frame(colSums(mysentiment_tesla[,]))
 
+                                   
+                                   
 #naming the columns as sentiments and score in sentimentscore_xyz
 #cbind is used to combine vectors , character by columns
 names(Sentimentscores_google)<-"Score"
